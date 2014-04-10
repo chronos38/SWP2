@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    qgraphicsitemprototype.cpp \
+    qgraphicsitemfactory.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    qgraphicsitemprototype.h \
+    qgraphicsitemfactory.h
 
 FORMS    += mainwindow.ui
