@@ -86,14 +86,14 @@ QGraphicsItemPrototype *QGraphicsItemComposite::clone(QGraphicsItem *parent)
 QGraphicsItemComposite::QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>& vector)
 {
 	for (QGraphicsItemPrototype* item : vector) {
-		m_children.push_back(item->clone());
+		m_children.push_back(item->clone(this));
 	}
 }
 
 QGraphicsItemComposite::QGraphicsItemComposite(const QVector<QGraphicsItemPrototype *> & vector, QGraphicsItem *parent)
 {
 	for (QGraphicsItemPrototype* item : vector) {
-		m_children.push_back(item->clone());
+		m_children.push_back(item->clone(this));
 	}
 
 	setParent(parent);
