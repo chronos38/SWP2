@@ -15,10 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     qgraphicsitemprototype.cpp \
-    qgraphicsitemfactory.cpp
+    qgraphicsitemfactory.cpp \
+    qgraphicsitemcomposite.cpp
 
 HEADERS  += mainwindow.h \
     qgraphicsitemprototype.h \
-    qgraphicsitemfactory.h
+    qgraphicsitemfactory.h \
+    qgraphicsitemcomposite.h \
+    qexception.h
 
 FORMS    += mainwindow.ui
+
+QMAKE_CXXFLAGS += -std=c++11
