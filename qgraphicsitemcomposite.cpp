@@ -1,6 +1,11 @@
 #include "qgraphicsitemcomposite.h"
 #include "qexception.h"
 
+QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent)
+{
+	setParent(parent);
+}
+
 void QGraphicsItemComposite::add(QGraphicsItemPrototype *component)
 {
 	// check argument
@@ -8,6 +13,7 @@ void QGraphicsItemComposite::add(QGraphicsItemPrototype *component)
 		throw QArgumentNullException();
 	}
 
+	component->setParent(this);
 	m_children.push_back(component);
 }
 
@@ -26,6 +32,7 @@ void QGraphicsItemComposite::remove(QGraphicsItemPrototype *component)
 		return;
 	}
 
+	getChild(index)->setParent(0);
 	m_children.removeAt(index);
 }
 
@@ -71,9 +78,23 @@ QGraphicsItemPrototype *QGraphicsItemComposite::clone()
 	return new QGraphicsItemComposite(m_children);
 }
 
+QGraphicsItemPrototype *QGraphicsItemComposite::clone(QGraphicsItem *parent)
+{
+	return new QGraphicsItemComposite(m_children, parent);
+}
+
 QGraphicsItemComposite::QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>& vector)
 {
 	for (QGraphicsItemPrototype* item : vector) {
 		m_children.push_back(item->clone());
 	}
+}
+
+QGraphicsItemComposite::QGraphicsItemComposite(const QVector<QGraphicsItemPrototype *> & vector, QGraphicsItem *parent)
+{
+	for (QGraphicsItemPrototype* item : vector) {
+		m_children.push_back(item->clone());
+	}
+
+	setParent(parent);
 }

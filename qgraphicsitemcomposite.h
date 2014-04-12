@@ -11,7 +11,7 @@ class QGraphicsItemComposite : public QGraphicsItemPrototype
 	typedef Composite::iterator Iterator;
 	typedef Composite::const_iterator ConstIterator;
 public:
-	QGraphicsItemComposite() = default;
+	QGraphicsItemComposite(QGraphicsItem *parent = 0);
 	QGraphicsItemComposite(const QGraphicsItemComposite&) = delete;
 	void add(QGraphicsItemPrototype* component);
 	void remove(QGraphicsItemPrototype* component);
@@ -21,8 +21,10 @@ public:
 	virtual QRectF boundingRect() const final;
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
 	virtual QGraphicsItemPrototype* clone() final;
+	virtual QGraphicsItemPrototype *clone(QGraphicsItem *parent) final;
 private:
 	explicit QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>&);
+	explicit QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>&, QGraphicsItem *parent);
 };
 
 #endif // GRAFICSITEMCOMPOSITE_HPP

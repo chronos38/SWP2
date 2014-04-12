@@ -1,12 +1,23 @@
 #include "qgraphicsitemprototype.h"
+#include "qexception.h"
 #include <QPainter>
 
 QGraphicsItemPrototype::QGraphicsItemPrototype(QPolygonF polygon, bool isEllipse, QGraphicsItem *parent) :
 	QGraphicsItem(parent),
 	m_polygon(polygon),
-	m_isEllipse(isEllipse)
+	m_isEllipse(isEllipse),
+	m_parent(parent)
 {
+}
 
+QGraphicsItem *QGraphicsItemPrototype::getParent() const
+{
+	return m_parent;
+}
+
+void QGraphicsItemPrototype::setParent(QGraphicsItem *parent)
+{
+	m_parent = parent;
 }
 
 QRectF QGraphicsItemPrototype::boundingRect() const
@@ -16,6 +27,11 @@ QRectF QGraphicsItemPrototype::boundingRect() const
 
 void QGraphicsItemPrototype::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	// check arguments
+	if (!painter || !option || !widget) {
+		throw QArgumentNullException();
+	}
+
 	if(m_isEllipse) {
 		painter->drawEllipse(m_polygon.boundingRect());
 	} else {
@@ -26,5 +42,11 @@ void QGraphicsItemPrototype::paint(QPainter *painter, const QStyleOptionGraphics
 QGraphicsItemPrototype *QGraphicsItemPrototype::clone()
 {
 	/*QObject verbietet echten copyconstructor*/
-	return new QGraphicsItemPrototype(m_polygon);
+	return new QGraphicsItemPrototype(m_polygon, m_isEllipse, m_parent);
+}
+
+QGraphicsItemPrototype *QGraphicsItemPrototype::clone(QGraphicsItem *parent)
+{
+	/*QObject verbietet echten copyconstructor*/
+	return new QGraphicsItemPrototype(m_polygon, m_isEllipse, parent);
 }
