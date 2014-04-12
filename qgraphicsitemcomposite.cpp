@@ -53,9 +53,27 @@ const QGraphicsItemPrototype* QGraphicsItemComposite::getChilde(int index) const
 	return m_children.at(index);
 }
 
+QRectF QGraphicsItemComposite::boundingRect() const
+{
+	// TODO: QRectF soll alle element umfassen
+	throw QException();
+}
+
 void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	for (QGraphicsItemPrototype* child : m_children) {
 		child->paint(painter, option, widget);
+	}
+}
+
+QGraphicsItemPrototype *QGraphicsItemComposite::clone()
+{
+	return new QGraphicsItemComposite(m_children);
+}
+
+QGraphicsItemComposite::QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>& vector)
+{
+	for (QGraphicsItemPrototype* item : vector) {
+		m_children.push_back(item->clone());
 	}
 }

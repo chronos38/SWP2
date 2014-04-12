@@ -18,6 +18,8 @@ QGraphicsItemFactory::QGraphicsItemFactory()
 	QPolygonF triangle;
 	triangle << QPointF(20, 20) << QPointF(-20, 20) << QPointF(0, 20);
 	m_triangle = new QGraphicsItemPrototype(triangle);
+
+	m_composite = new QGraphicsItemComposite();
 }
 
 QGraphicsItemFactory::~QGraphicsItemFactory()
@@ -52,4 +54,9 @@ QGraphicsItem *QGraphicsItemFactory::makeSquare() const
 QGraphicsItem *QGraphicsItemFactory::makeTriangle() const
 {
 	return m_triangle->clone();
+}
+
+QGraphicsItem *QGraphicsItemFactory::makeComposite() const
+{
+	return m_composite->clone();
 }
