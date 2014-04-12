@@ -16,13 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     qgraphicsitemprototype.cpp \
     qgraphicsitemfactory.cpp \
-    qgraphicsitemcomposite.cpp
+    qgraphicsitemcomposite.cpp \
+    graphicsscene.cpp
 
 HEADERS  += mainwindow.h \
     qgraphicsitemprototype.h \
     qgraphicsitemfactory.h \
     qgraphicsitemcomposite.h \
-    qexception.h
+    qexception.h \
+    graphicsscene.h
 
 FORMS    += mainwindow.ui
 

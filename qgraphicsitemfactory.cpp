@@ -16,7 +16,7 @@ QGraphicsItemFactory::QGraphicsItemFactory()
 	m_square = new QGraphicsItemPrototype(square);
 
 	QPolygonF triangle;
-	triangle << QPointF(20, 20) << QPointF(-20, 20) << QPointF(0, 20);
+	triangle << QPointF(20, 20) << QPointF(-20, 20) << QPointF(0, 50);
 	m_triangle = new QGraphicsItemPrototype(triangle);
 
 	m_composite = new QGraphicsItemComposite();
