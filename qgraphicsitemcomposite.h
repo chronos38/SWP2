@@ -1,13 +1,13 @@
 #ifndef GRAFICSITEMCOMPOSITE_HPP
 #define GRAFICSITEMCOMPOSITE_HPP
 
-#include <QVector>
+#include <QList>
 #include "qgraphicsitemprototype.h"
 
 class QGraphicsItemComposite : public QGraphicsItemPrototype
 {
-	QVector<QGraphicsItemPrototype*> m_children;
-	typedef QVector<QGraphicsItemPrototype*> Composite;
+	QList<QGraphicsItemPrototype*> m_children;
+	typedef QList<QGraphicsItemPrototype*> Composite;
 	typedef Composite::iterator Iterator;
 	typedef Composite::const_iterator ConstIterator;
 public:
@@ -23,8 +23,8 @@ public:
 	virtual QGraphicsItemPrototype* clone() final;
 	virtual QGraphicsItemPrototype *clone(QGraphicsItem *parent) final;
 private:
-	explicit QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>&);
-	explicit QGraphicsItemComposite(const QVector<QGraphicsItemPrototype*>&, QGraphicsItem *parent);
+	explicit QGraphicsItemComposite(const QList<QGraphicsItemPrototype*>&);
+	explicit QGraphicsItemComposite(const QList<QGraphicsItemPrototype*>&, QGraphicsItem *parent);
 };
 
 #endif // GRAFICSITEMCOMPOSITE_HPP
