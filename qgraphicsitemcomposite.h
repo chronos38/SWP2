@@ -15,8 +15,8 @@ public:
 	QGraphicsItemComposite(const QGraphicsItemComposite&) = delete;
 	void add(QGraphicsItemPrototype* component);
 	void remove(QGraphicsItemPrototype* component);
-	QGraphicsItemPrototype* getChilde(int index);
-	const QGraphicsItemPrototype* getChilde(int index) const;
+	QGraphicsItemPrototype* getChild(int index);
+	const QGraphicsItemPrototype* getChild(int index) const;
 
 	virtual QRectF boundingRect() const final;
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;

@@ -29,7 +29,7 @@ void QGraphicsItemComposite::remove(QGraphicsItemPrototype *component)
 	m_children.removeAt(index);
 }
 
-QGraphicsItemPrototype* QGraphicsItemComposite::getChilde(int index)
+QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index)
 {
 	// check argument
 	if (index < 0) {
@@ -41,7 +41,7 @@ QGraphicsItemPrototype* QGraphicsItemComposite::getChilde(int index)
 	return m_children.at(index);
 }
 
-const QGraphicsItemPrototype* QGraphicsItemComposite::getChilde(int index) const
+const QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index) const
 {
 	// check argument
 	if (index < 0) {
@@ -55,7 +55,7 @@ const QGraphicsItemPrototype* QGraphicsItemComposite::getChilde(int index) const
 
 QRectF QGraphicsItemComposite::boundingRect() const
 {
-	// TODO: QRectF soll alle element umfassen
+	// TODO: QRectF soll alle Elemente umfassen
 	throw QException();
 }
 
