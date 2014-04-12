@@ -3,6 +3,11 @@
 
 void QGraphicsItemComposite::add(QGraphicsItemPrototype *component)
 {
+	// check argument
+	if (!component) {
+		throw QArgumentNullException();
+	}
+
 	m_children.push_back(component);
 }
 
