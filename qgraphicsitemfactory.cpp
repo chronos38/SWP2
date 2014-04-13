@@ -24,6 +24,7 @@ QGraphicsItemFactory::QGraphicsItemFactory()
 
 QGraphicsItemFactory::~QGraphicsItemFactory()
 {
+	delete m_composite;
 	delete m_circle;
 	delete m_ellipse;
 	delete m_rect;
