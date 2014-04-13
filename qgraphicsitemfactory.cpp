@@ -61,3 +61,8 @@ QGraphicsItem *QGraphicsItemFactory::makeComposite() const
 {
 	return m_composite->clone();
 }
+
+QGraphicsPathItem *QGraphicsItemFactory::makePath() const
+{
+	return new QGraphicsPathItem();
+}

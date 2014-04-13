@@ -2,6 +2,7 @@
 #define QGRAPHICSITEMFACTORY_H
 
 #include <QGraphicsItem>
+#include <QGraphicsPathItem>
 #include "qgraphicsitemprototype.h"
 #include "qgraphicsitemcomposite.h"
 
@@ -17,6 +18,7 @@ public:
 	QGraphicsItem *makeSquare() const;
 	QGraphicsItem *makeTriangle() const;
 	QGraphicsItem *makeComposite() const;
+	QGraphicsPathItem *makePath() const;
 private:
 	QGraphicsItemPrototype * m_circle;
 	QGraphicsItemPrototype * m_ellipse;

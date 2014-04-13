@@ -25,80 +25,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="PinselButton1">
-         <property name="text">
-          <string>Pinsel 1</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="PinselButton2">
-         <property name="text">
-          <string>Pinsel 2</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="Line" name="line_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="EllipseButton">
-         <property name="text">
-          <string>Ellipse</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="KreisButton">
-         <property name="text">
-          <string>Kreis</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="Rechteck">
-         <property name="text">
-          <string>Rechteck</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="QuadratButton">
-         <property name="text">
-          <string>Quadrat</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="DreickButton">
-         <property name="text">
-          <string>Dreieck</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        <widget class="ButtonWidgetMediator" name="widget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -114,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>559</width>
-     <height>19</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>
@@ -129,6 +56,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ButtonWidgetMediator</class>
+   <extends>QWidget</extends>
+   <header location="global">buttonwidgetmediator.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

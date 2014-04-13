@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     qgraphicsitemprototype.cpp \
     qgraphicsitemfactory.cpp \
     qgraphicsitemcomposite.cpp \
-    graphicsscene.cpp
+    graphicsscene.cpp \
+    buttonwidgetmediator.cpp
 
 HEADERS  += mainwindow.h \
     qgraphicsitemprototype.h \
     qgraphicsitemfactory.h \
     qgraphicsitemcomposite.h \
     qexception.h \
-    graphicsscene.h
+    graphicsscene.h \
+    buttonwidgetmediator.h
 
 FORMS    += mainwindow.ui
 
