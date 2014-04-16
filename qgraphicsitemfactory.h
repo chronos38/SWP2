@@ -1,6 +1,7 @@
 #ifndef QGRAPHICSITEMFACTORY_H
 #define QGRAPHICSITEMFACTORY_H
 
+#include <QHash>
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
 #include "qgraphicsitemprototype.h"
@@ -12,20 +13,10 @@ public:
 	QGraphicsItemFactory();
 	~QGraphicsItemFactory();
 
-	QGraphicsItem *makeCircle() const;
-	QGraphicsItem *makeEllipse() const;
-	QGraphicsItem *makeRect() const;
-	QGraphicsItem *makeSquare() const;
-	QGraphicsItem *makeTriangle() const;
-	QGraphicsItem *makeComposite() const;
-	QGraphicsPathItem *makePath() const;
+	QGraphicsItem *create(const QString& uid);
+	QList<QString> getUids() const;
 private:
-	QGraphicsItemPrototype * m_circle;
-	QGraphicsItemPrototype * m_ellipse;
-	QGraphicsItemPrototype * m_rect;
-	QGraphicsItemPrototype * m_square;
-	QGraphicsItemPrototype * m_triangle;
-	QGraphicsItemComposite * m_composite;
+	QHash<QString, QGraphicsItemPrototype*> m_registry;
 };
 
 #endif // QGRAPHICSITEMFACTORY_H

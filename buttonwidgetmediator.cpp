@@ -1,53 +1,87 @@
 #include "buttonwidgetmediator.h"
 #include <QDebug>
+#include "qexception.h"
+#include "graphicsscene.h"
 
 ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 	QWidget(parent),
-	layout(new QVBoxLayout()),
-	handButton(new QPushButton("Verschieben", this)),
-	penButton1(new QPushButton("Pinsel1", this)),
-	penButton2(new QPushButton("Pinsel2", this)),
-	rectButton(new QPushButton("Rechteck", this)),
-	squareButton(new QPushButton("Quadrat", this)),
-	circleButton(new QPushButton("Kreis", this)),
-	ellipseButton(new QPushButton("Ellipse", this)),
-	triangleButton(new QPushButton("Dreieck", this))
+	layout(new QVBoxLayout())
 {
-	layout->addWidget(handButton);
-	layout->addWidget(penButton1);
-	layout->addWidget(penButton2);
-	layout->addWidget(rectButton);
-	layout->addWidget(squareButton);
-	layout->addWidget(circleButton);
-	layout->addWidget(ellipseButton);
-	layout->addWidget(triangleButton);
-
-	connect(penButton1, SIGNAL(clicked()),this, SLOT(penButton1Pressed()));
-
 	this->setLayout(layout);
 	this->show();
+	QList<QString> uids = factory->getUids();
+
+	registerButton("Move", new QPushButton("Move"));
+
+	for (QString& uid : uids) {
+		registerButton(uid, new QPushButton(uid));
+	}
+
+	registerScene(new GraphicsScene());
 }
 
 ButtonWidgetMediator::~ButtonWidgetMediator()
 {
-	delete layout;
-	delete penButton1;
-	delete penButton2;
-	delete rectButton;
-	delete squareButton;
-	delete circleButton;
-	delete ellipseButton;
-	delete triangleButton;
+	if (scene) {
+		delete scene;
+	}
+
+	delete factory;
 }
 
-void ButtonWidgetMediator::penButton1Pressed()
+void ButtonWidgetMediator::registerButton(const QString &uid, QPushButton *button)
 {
-	qDebug("blub");
+	if (!button) {
+		throw QArgumentNullException();
+	} else if (registry.contains(uid)) {
+		throw QException();
+	}
+
+	registry[uid] = button;
+	layout->addWidget(button);
+	connect(button, SIGNAL(clicked()), this, SLOT(buttonClicked()));
 }
 
-void ButtonWidgetMediator::penButton2Pressed()
+void ButtonWidgetMediator::registerScene(GraphicsScene *scene)
 {
+	if (!scene) {
+		throw QException();
+	} else if (this->scene) {
+		this->scene->deleteLater();
+	}
 
+	this->scene = scene;
+	connect(this->scene, SIGNAL(clicked()), this, SLOT(addItem()));
 }
 
+GraphicsScene *ButtonWidgetMediator::getScene() const
+{
+	return scene;
+}
 
+void ButtonWidgetMediator::addItem()
+{
+	if (!scene) {
+		throw QException();
+	}
+
+	QGraphicsItem* item = factory->create(uid);
+
+	if (!item) {
+		return;
+	}
+
+	item->setPos(scene->getPos());
+	item->setFlag(QGraphicsItem::ItemIsMovable);
+	scene->addItem(item);
+}
+
+void ButtonWidgetMediator::buttonClicked()
+{
+	if (!scene) {
+		return;
+	}
+
+	QPushButton* button = qobject_cast<QPushButton*>(sender());
+	this->uid = registry.key(button);
+}

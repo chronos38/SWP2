@@ -1,68 +1,40 @@
 #include "qgraphicsitemfactory.h"
 #include <QPolygonF>
+#include "qexception.h"
 
 QGraphicsItemFactory::QGraphicsItemFactory()
 {
-	QPolygonF circle(QRectF(0,0,40,40));
-	m_circle = new QGraphicsItemPrototype(circle, true);
-
-	QPolygonF ellipse(QRectF(0,0,40,60));
-	m_ellipse = new QGraphicsItemPrototype(ellipse, true);
-
-	QPolygonF rect(QRectF(0,0,40,60));
-	m_rect = new QGraphicsItemPrototype(rect);
-
-	QPolygonF square(QRectF(0,0,40,40));
-	m_square = new QGraphicsItemPrototype(square);
-
-	QPolygonF triangle;
-	triangle << QPointF(20, 20) << QPointF(-20, 20) << QPointF(0, 50);
-	m_triangle = new QGraphicsItemPrototype(triangle);
-
-	m_composite = new QGraphicsItemComposite();
+	m_registry["Circle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)), true);
+	m_registry["Ellipse"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)), true);
+	m_registry["Rectangle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)));
+	m_registry["Square"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)));
+	m_registry["Triangle"] = new QGraphicsItemPrototype(QPolygonF(QVector<QPointF>({
+								 QPointF(20, 20),
+								 QPointF(-20, 20),
+								 QPointF(0, 50)})));
 }
 
 QGraphicsItemFactory::~QGraphicsItemFactory()
 {
-	delete m_composite;
-	delete m_circle;
-	delete m_ellipse;
-	delete m_rect;
-	delete m_square;
-	delete m_triangle;
+	for (auto it : m_registry) {
+		delete it;
+	}
 }
 
-QGraphicsItem *QGraphicsItemFactory::makeCircle() const
+QGraphicsItem *QGraphicsItemFactory::create(const QString &uid)
 {
-	return m_circle->clone();
+	if (uid == "Composite") {
+		return new QGraphicsItemComposite();
+	} else if (uid == "Path") {
+		return new QGraphicsPathItem();
+	} else if (!m_registry.contains(uid)) {
+		return nullptr;
+	}
+
+	return m_registry[uid]->clone();
 }
 
-QGraphicsItem *QGraphicsItemFactory::makeEllipse() const
+QList<QString> QGraphicsItemFactory::getUids() const
 {
-	return m_ellipse->clone();
-}
-
-QGraphicsItem *QGraphicsItemFactory::makeRect() const
-{
-	return m_rect->clone();
-}
-
-QGraphicsItem *QGraphicsItemFactory::makeSquare() const
-{
-	return m_square->clone();
-}
-
-QGraphicsItem *QGraphicsItemFactory::makeTriangle() const
-{
-	return m_triangle->clone();
-}
-
-QGraphicsItem *QGraphicsItemFactory::makeComposite() const
-{
-	return m_composite->clone();
-}
-
-QGraphicsPathItem *QGraphicsItemFactory::makePath() const
-{
-	return new QGraphicsPathItem();
+	return m_registry.keys();
 }

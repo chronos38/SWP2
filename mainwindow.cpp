@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+	/*
 	m_scene = new GraphicsScene();
 	ui->graphicsView->setScene(m_scene);
 	ui->graphicsView->setMouseTracking(true);
@@ -18,10 +19,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	for(auto &it: m_scene->items()) {
 		it->setFlags(QGraphicsItem::ItemIsMovable);
 	}
+	*/
+	ui->graphicsView->setScene(ui->widget->getScene());
+	ui->graphicsView->setMouseTracking(true);
+
 }
 
 MainWindow::~MainWindow()
 {
-	delete m_scene;
+	if (m_scene) {
+		delete m_scene;
+	}
+
 	delete ui;
 }

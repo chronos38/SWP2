@@ -3,21 +3,21 @@
 
 QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent)
 {
-	setParent(parent);
+	setParentItem(parent);
 }
 
-void QGraphicsItemComposite::add(QGraphicsItemPrototype *component)
+void QGraphicsItemComposite::add(QGraphicsItem *component)
 {
 	// check argument
 	if (!component) {
 		throw QArgumentNullException();
 	}
 
-	component->setParent(this);
+	component->setParentItem(this);
 	m_children.push_back(component);
 }
 
-void QGraphicsItemComposite::remove(QGraphicsItemPrototype *component)
+void QGraphicsItemComposite::remove(QGraphicsItem *component)
 {
 	// check argument
 	if (!component) {
@@ -32,11 +32,11 @@ void QGraphicsItemComposite::remove(QGraphicsItemPrototype *component)
 		return;
 	}
 
-	getChild(index)->setParent(0);
+	getChild(index)->setParentItem(0);
 	m_children.removeAt(index);
 }
 
-QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index)
+QGraphicsItem* QGraphicsItemComposite::getChild(int index)
 {
 	// check argument
 	if (index < 0) {
@@ -48,7 +48,7 @@ QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index)
 	return m_children.at(index);
 }
 
-const QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index) const
+const QGraphicsItem* QGraphicsItemComposite::getChild(int index) const
 {
 	// check argument
 	if (index < 0) {
@@ -62,39 +62,27 @@ const QGraphicsItemPrototype* QGraphicsItemComposite::getChild(int index) const
 
 QRectF QGraphicsItemComposite::boundingRect() const
 {
-	// TODO: QRectF soll alle Elemente umfassen
-	throw QException();
+	// variables
+	QSizeF size(0, 0);
+
+	for (auto child : m_children) {
+		QSizeF rectSize = child->boundingRect().size();
+
+		if (rectSize.width() > size.width()) {
+			size.setWidth(rectSize.width());
+		}
+
+		if (rectSize.height() > size.height()) {
+			size.setHeight(rectSize.height());
+		}
+	}
+
+	return QRectF(QPointF(), size);
 }
 
 void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	for (QGraphicsItemPrototype* child : m_children) {
+	for (auto child : m_children) {
 		child->paint(painter, option, widget);
 	}
-}
-
-QGraphicsItemPrototype *QGraphicsItemComposite::clone()
-{
-	return new QGraphicsItemComposite(m_children);
-}
-
-QGraphicsItemPrototype *QGraphicsItemComposite::clone(QGraphicsItem *parent)
-{
-	return new QGraphicsItemComposite(m_children, parent);
-}
-
-QGraphicsItemComposite::QGraphicsItemComposite(const Composite &composite)
-{
-	for (QGraphicsItemPrototype* item : composite) {
-		m_children.push_back(item->clone(this));
-	}
-}
-
-QGraphicsItemComposite::QGraphicsItemComposite(const Composite &composite, QGraphicsItem *parent)
-{
-	for (QGraphicsItemPrototype* item : composite) {
-		m_children.push_back(item->clone(this));
-	}
-
-	setParent(parent);
 }
