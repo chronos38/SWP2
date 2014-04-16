@@ -83,16 +83,16 @@ QGraphicsItemPrototype *QGraphicsItemComposite::clone(QGraphicsItem *parent)
 	return new QGraphicsItemComposite(m_children, parent);
 }
 
-QGraphicsItemComposite::QGraphicsItemComposite(const QList<QGraphicsItemPrototype *> &vector)
+QGraphicsItemComposite::QGraphicsItemComposite(const Composite &composite)
 {
-	for (QGraphicsItemPrototype* item : vector) {
+	for (QGraphicsItemPrototype* item : composite) {
 		m_children.push_back(item->clone(this));
 	}
 }
 
-QGraphicsItemComposite::QGraphicsItemComposite(const QList<QGraphicsItemPrototype *> &vector, QGraphicsItem *parent)
+QGraphicsItemComposite::QGraphicsItemComposite(const Composite &composite, QGraphicsItem *parent)
 {
-	for (QGraphicsItemPrototype* item : vector) {
+	for (QGraphicsItemPrototype* item : composite) {
 		m_children.push_back(item->clone(this));
 	}
 

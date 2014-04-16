@@ -23,8 +23,8 @@ public:
 	virtual QGraphicsItemPrototype* clone() final;
 	virtual QGraphicsItemPrototype *clone(QGraphicsItem *parent) final;
 private:
-	explicit QGraphicsItemComposite(const QList<QGraphicsItemPrototype*>&);
-	explicit QGraphicsItemComposite(const QList<QGraphicsItemPrototype*>&, QGraphicsItem *parent);
+	explicit QGraphicsItemComposite(const Composite&);
+	explicit QGraphicsItemComposite(const Composite&, QGraphicsItem *parent);
 };
 
 #endif // GRAFICSITEMCOMPOSITE_HPP

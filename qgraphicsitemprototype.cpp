@@ -5,19 +5,18 @@
 QGraphicsItemPrototype::QGraphicsItemPrototype(QPolygonF polygon, bool isEllipse, QGraphicsItem *parent) :
 	QGraphicsItem(parent),
 	m_polygon(polygon),
-	m_isEllipse(isEllipse),
-	m_parent(parent)
+	m_isEllipse(isEllipse)
 {
 }
 
 QGraphicsItem *QGraphicsItemPrototype::getParent() const
 {
-	return m_parent;
+	return parentItem();
 }
 
 void QGraphicsItemPrototype::setParent(QGraphicsItem *parent)
 {
-	m_parent = parent;
+	setParentItem(parent);
 }
 
 QRectF QGraphicsItemPrototype::boundingRect() const

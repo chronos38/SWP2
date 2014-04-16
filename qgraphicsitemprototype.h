@@ -20,7 +20,6 @@ public:
 private:
 	QPolygonF m_polygon;
 	bool m_isEllipse;
-	QGraphicsItem* m_parent;
 };
 
 #endif // QGRAPHICSITEMPROTOTYPE_H
