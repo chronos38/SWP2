@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     qgraphicsitemfactory.cpp \
     qgraphicsitemcomposite.cpp \
     graphicsscene.cpp \
-    buttonwidgetmediator.cpp
+    buttonwidgetmediator.cpp \
+    commands.cpp
 
 HEADERS  += mainwindow.h \
     qgraphicsitemprototype.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     qgraphicsitemcomposite.h \
     qexception.h \
     graphicsscene.h \
-    buttonwidgetmediator.h
+    buttonwidgetmediator.h \
+    commands.h
 
 FORMS    += mainwindow.ui
 

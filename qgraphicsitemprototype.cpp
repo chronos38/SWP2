@@ -7,6 +7,7 @@ QGraphicsItemPrototype::QGraphicsItemPrototype(QPolygonF polygon, bool isEllipse
 	m_polygon(polygon),
 	m_isEllipse(isEllipse)
 {
+	setFlag(ItemIsMovable);
 }
 
 QRectF QGraphicsItemPrototype::boundingRect() const
@@ -32,4 +33,5 @@ QGraphicsItemPrototype *QGraphicsItemPrototype::clone()
 {
 	/*QObject verbietet echten copyconstructor*/
 	return new QGraphicsItemPrototype(m_polygon, m_isEllipse, parentItem());
+
 }

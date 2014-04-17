@@ -7,7 +7,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "qgraphicsitemfactory.h"
+#include "qgraphicsitemcomposite.h"
 #include "graphicsscene.h"
+#include "commands.h"
 
 class ButtonWidgetMediator : public QWidget
 {
@@ -16,21 +18,24 @@ public:
 	explicit ButtonWidgetMediator(QWidget *parent = 0);
 	~ButtonWidgetMediator();
 
-	virtual void registerButton(const QString& uid, QPushButton* button);
+	virtual void registerButton(const QString& uid);
 	virtual void registerScene(GraphicsScene* scene);
 	virtual GraphicsScene *getScene() const;
 signals:
 	void clicked(const QString& uid);
 
-public slots:
-	void addItem();
-
 private slots:
+	void sceneClicked();
 	void buttonClicked();
+
+protected:
+	void addItem();
+	void handleItem(QGraphicsItem* item);
 
 private:
 	QGraphicsItemFactory* factory = new QGraphicsItemFactory();
 	QHash<QString, QPushButton*> registry;
+	QHash<QString, ICommand*> commands;
 	GraphicsScene* scene = nullptr;
 	QVBoxLayout *layout = nullptr;
 	QString uid;

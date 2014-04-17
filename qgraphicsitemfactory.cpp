@@ -4,11 +4,11 @@
 
 QGraphicsItemFactory::QGraphicsItemFactory()
 {
-	m_registry["Circle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)), true);
-	m_registry["Ellipse"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)), true);
-	m_registry["Rectangle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)));
-	m_registry["Square"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)));
-	m_registry["Triangle"] = new QGraphicsItemPrototype(QPolygonF(QVector<QPointF>({
+	registry["Circle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)), true);
+	registry["Ellipse"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)), true);
+	registry["Rectangle"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 60)));
+	registry["Square"] = new QGraphicsItemPrototype(QPolygonF(QRectF(0, 0, 40, 40)));
+	registry["Triangle"] = new QGraphicsItemPrototype(QPolygonF(QVector<QPointF>({
 								 QPointF(20, 20),
 								 QPointF(-20, 20),
 								 QPointF(0, 50)})));
@@ -16,25 +16,21 @@ QGraphicsItemFactory::QGraphicsItemFactory()
 
 QGraphicsItemFactory::~QGraphicsItemFactory()
 {
-	for (auto it : m_registry) {
+	for (auto it : registry) {
 		delete it;
 	}
 }
 
 QGraphicsItem *QGraphicsItemFactory::create(const QString &uid)
 {
-	if (uid == "Composite") {
-		return new QGraphicsItemComposite();
-	} else if (uid == "Path") {
-		return new QGraphicsPathItem();
-	} else if (!m_registry.contains(uid)) {
+	if (!registry.contains(uid)) {
 		return nullptr;
 	}
 
-	return m_registry[uid]->clone();
+	return registry[uid]->clone();
 }
 
 QList<QString> QGraphicsItemFactory::getUids() const
 {
-	return m_registry.keys();
+	return registry.keys();
 }

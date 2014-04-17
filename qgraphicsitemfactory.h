@@ -5,9 +5,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
 #include "qgraphicsitemprototype.h"
-#include "qgraphicsitemcomposite.h"
 
-class QGraphicsItemFactory
+class QGraphicsItemFactory : public QObject
 {
 public:
 	QGraphicsItemFactory();
@@ -16,7 +15,7 @@ public:
 	QGraphicsItem *create(const QString& uid);
 	QList<QString> getUids() const;
 private:
-	QHash<QString, QGraphicsItemPrototype*> m_registry;
+	QHash<QString, QGraphicsItemPrototype*> registry;
 };
 
 #endif // QGRAPHICSITEMFACTORY_H

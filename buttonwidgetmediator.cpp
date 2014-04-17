@@ -11,10 +11,18 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 	this->show();
 	QList<QString> uids = factory->getUids();
 
-	registerButton("Move", new QPushButton("Move"));
+	commands["Move"] = nullptr;
+	commands["Group"] = new CommandGroup();
+	commands["Remove"] = new CommandRemove();
+
+	QList<QString> commandKeys = commands.keys();
+
+	for (QString& uid : commandKeys) {
+		registerButton(uid);
+	}
 
 	for (QString& uid : uids) {
-		registerButton(uid, new QPushButton(uid));
+		registerButton(uid);
 	}
 
 	registerScene(new GraphicsScene());
@@ -23,17 +31,17 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 ButtonWidgetMediator::~ButtonWidgetMediator()
 {
 	if (scene) {
-		delete scene;
+		scene->deleteLater();
 	}
 
-	delete factory;
+	factory->deleteLater();
 }
 
-void ButtonWidgetMediator::registerButton(const QString &uid, QPushButton *button)
+void ButtonWidgetMediator::registerButton(const QString &uid)
 {
-	if (!button) {
-		throw QArgumentNullException();
-	} else if (registry.contains(uid)) {
+	QPushButton* button = new QPushButton(uid);
+
+	if (registry.contains(uid)) {
 		throw QException();
 	}
 
@@ -51,12 +59,33 @@ void ButtonWidgetMediator::registerScene(GraphicsScene *scene)
 	}
 
 	this->scene = scene;
-	connect(this->scene, SIGNAL(clicked()), this, SLOT(addItem()));
+	connect(this->scene, SIGNAL(clicked()), this, SLOT(sceneClicked()));
 }
 
 GraphicsScene *ButtonWidgetMediator::getScene() const
 {
 	return scene;
+}
+
+void ButtonWidgetMediator::sceneClicked()
+{
+	if (!scene) {
+		return;
+	} else if (factory->getUids().contains(uid)) {
+		addItem();
+	} else {
+		handleItem(scene->itemAt(scene->getPos(), QTransform()));
+	}
+}
+
+void ButtonWidgetMediator::buttonClicked()
+{
+	if (!scene) {
+		return;
+	}
+
+	QPushButton* button = qobject_cast<QPushButton*>(sender());
+	this->uid = registry.key(button);
 }
 
 void ButtonWidgetMediator::addItem()
@@ -72,16 +101,20 @@ void ButtonWidgetMediator::addItem()
 	}
 
 	item->setPos(scene->getPos());
-	item->setFlag(QGraphicsItem::ItemIsMovable);
 	scene->addItem(item);
 }
 
-void ButtonWidgetMediator::buttonClicked()
+void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 {
 	if (!scene) {
 		return;
+	} else if (!item) {
+		return;
 	}
 
-	QPushButton* button = qobject_cast<QPushButton*>(sender());
-	this->uid = registry.key(button);
+	ICommand* command = commands[uid];
+
+	if (command) {
+		command->execute(item);
+	}
 }
