@@ -12,8 +12,8 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 	QList<QString> uids = factory->getUids();
 
 	commands["Move"] = nullptr;
-	commands["Group"] = new CommandGroup();
 	commands["Remove"] = new CommandRemove();
+	commands["Group"] = new CommandGroup();
 
 	QList<QString> commandKeys = commands.keys();
 
@@ -115,6 +115,10 @@ void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 	ICommand* command = commands[uid];
 
 	if (command) {
-		command->execute(item);
+		QGraphicsItem* result = command->execute(scene, item);
+
+		if (result) {
+			scene->addItem(result);
+		}
 	}
 }

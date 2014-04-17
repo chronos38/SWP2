@@ -4,6 +4,7 @@
 QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent)
 {
 	setParentItem(parent);
+	setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 void QGraphicsItemComposite::add(QGraphicsItem *component)
@@ -13,8 +14,10 @@ void QGraphicsItemComposite::add(QGraphicsItem *component)
 		throw QArgumentNullException();
 	}
 
+	this->setPos(component->x(), component->y());
 	component->setParentItem(this);
-	m_children.push_back(component);
+	component->setPos(0, 0);
+	children.push_back(component);
 }
 
 void QGraphicsItemComposite::remove(QGraphicsItem *component)
@@ -25,15 +28,15 @@ void QGraphicsItemComposite::remove(QGraphicsItem *component)
 	}
 
 	// variables
-	int index = m_children.indexOf(component);
+	int index = children.indexOf(component);
 
 	// remove
 	if (index < 0) {
 		return;
 	}
 
-	getChild(index)->setParentItem(0);
-	m_children.removeAt(index);
+	getChild(index)->setParentItem(parentItem());
+	children.removeAt(index);
 }
 
 QGraphicsItem* QGraphicsItemComposite::getChild(int index)
@@ -41,11 +44,11 @@ QGraphicsItem* QGraphicsItemComposite::getChild(int index)
 	// check argument
 	if (index < 0) {
 		throw QArgumentOutOfRangeException();
-	} else if (index >= m_children.length()) {
+	} else if (index >= children.length()) {
 		throw QArgumentOutOfRangeException();
 	}
 
-	return m_children.at(index);
+	return children.at(index);
 }
 
 const QGraphicsItem* QGraphicsItemComposite::getChild(int index) const
@@ -53,11 +56,16 @@ const QGraphicsItem* QGraphicsItemComposite::getChild(int index) const
 	// check argument
 	if (index < 0) {
 		throw QArgumentOutOfRangeException();
-	} else if (index >= m_children.length()) {
+	} else if (index >= children.length()) {
 		throw QArgumentOutOfRangeException();
 	}
 
-	return m_children.at(index);
+	return children.at(index);
+}
+
+bool QGraphicsItemComposite::contains(QGraphicsItem *item) const
+{
+	return children.contains(item);
 }
 
 QRectF QGraphicsItemComposite::boundingRect() const
@@ -65,7 +73,7 @@ QRectF QGraphicsItemComposite::boundingRect() const
 	// variables
 	QSizeF size(0, 0);
 
-	for (auto child : m_children) {
+	for (auto child : children) {
 		QSizeF rectSize = child->boundingRect().size();
 
 		if (rectSize.width() > size.width()) {
@@ -82,7 +90,7 @@ QRectF QGraphicsItemComposite::boundingRect() const
 
 void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	for (auto child : m_children) {
+	for (auto child : children) {
 		child->paint(painter, option, widget);
 	}
 }

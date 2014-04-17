@@ -1,11 +1,27 @@
 #include "commands.h"
+#include "qgraphicsitemcomposite.h"
 
-void CommandGroup::execute(QGraphicsItem *item)
+QGraphicsItem* CommandGroup::execute(GraphicsScene* scene, QGraphicsItem *item)
 {
+	QGraphicsItemComposite* composite = dynamic_cast<QGraphicsItemComposite*>(item);
 
+	if (composite) {
+		if (composite->contains(item)) {
+			composite->remove(item);
+		} else {
+			composite->add(item);
+		}
+	} else {
+		composite = new QGraphicsItemComposite(item->parentItem());
+		composite->add(item);
+		return composite;
+	}
+
+	return nullptr;
 }
 
-void CommandRemove::execute(QGraphicsItem *item)
+QGraphicsItem* CommandRemove::execute(GraphicsScene* scene, QGraphicsItem *item)
 {
-	delete item;
+	scene->removeItem(item);
+	return nullptr;
 }
