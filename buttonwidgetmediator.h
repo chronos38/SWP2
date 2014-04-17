@@ -11,18 +11,31 @@
 #include "graphicsscene.h"
 #include "commands.h"
 
-class ButtonWidgetMediator : public QWidget
+class Mediator : public QWidget
+{
+	Q_OBJECT
+signals:
+	void clicked(const QString& uid);
+public:
+	Mediator(QWidget* parent = 0);
+	virtual ~Mediator(){}
+	virtual GraphicsScene* getScene() const = 0;
+	virtual QList<QGraphicsItem*> getSelected() const = 0;
+	virtual void clearSelection() = 0;
+};
+
+class ButtonWidgetMediator : public Mediator
 {
 	Q_OBJECT
 public:
 	explicit ButtonWidgetMediator(QWidget *parent = 0);
-	~ButtonWidgetMediator();
+	virtual ~ButtonWidgetMediator();
 
 	virtual void registerButton(const QString& uid);
 	virtual void registerScene(GraphicsScene* scene);
-	virtual GraphicsScene *getScene() const;
-signals:
-	void clicked(const QString& uid);
+	virtual GraphicsScene *getScene() const final;
+	virtual QList<QGraphicsItem*> getSelected() const final;
+	virtual void clearSelection() final;
 
 private slots:
 	void sceneClicked();
@@ -35,7 +48,8 @@ protected:
 private:
 	QGraphicsItemFactory* factory = new QGraphicsItemFactory();
 	QHash<QString, QPushButton*> registry;
-	QHash<QString, ICommand*> commands;
+	QHash<QString, Command*> commands;
+	QList<QGraphicsItem*> selected;
 	GraphicsScene* scene = nullptr;
 	QVBoxLayout *layout = nullptr;
 	QString uid;

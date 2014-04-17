@@ -1,10 +1,11 @@
 #include "qgraphicsitemcomposite.h"
 #include "qexception.h"
+#include <cmath>
 
-QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent)
+QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent) :
+	QGraphicsItem(parent)
 {
-	setParentItem(parent);
-	setFlag(QGraphicsItem::ItemIsMovable);
+	setFlag(QGraphicsItem::ItemIsMovable, true);
 }
 
 void QGraphicsItemComposite::add(QGraphicsItem *component)
@@ -14,9 +15,8 @@ void QGraphicsItemComposite::add(QGraphicsItem *component)
 		throw QArgumentNullException();
 	}
 
-	this->setPos(component->x(), component->y());
 	component->setParentItem(this);
-	component->setPos(0, 0);
+	component->setFlag(QGraphicsItem::ItemIsMovable, false);
 	children.push_back(component);
 }
 
@@ -36,6 +36,7 @@ void QGraphicsItemComposite::remove(QGraphicsItem *component)
 	}
 
 	getChild(index)->setParentItem(parentItem());
+	component->setFlag(QGraphicsItem::ItemIsMovable, true);
 	children.removeAt(index);
 }
 
@@ -68,29 +69,61 @@ bool QGraphicsItemComposite::contains(QGraphicsItem *item) const
 	return children.contains(item);
 }
 
+void QGraphicsItemComposite::adjustPosition()
+{
+	qreal xmin, xmax, ymin, ymax;
+
+	computeSize(xmin, xmax, ymin, ymax);
+	setPos(xmin, ymin);
+
+	for (QGraphicsItem* child : children) {
+		child->setX(std::abs(xmin) + child->x());
+		child->setY(std::abs(ymin) + child->y());
+	}
+}
+
 QRectF QGraphicsItemComposite::boundingRect() const
 {
 	// variables
-	QSizeF size(0, 0);
-
-	for (auto child : children) {
-		QSizeF rectSize = child->boundingRect().size();
-
-		if (rectSize.width() > size.width()) {
-			size.setWidth(rectSize.width());
-		}
-
-		if (rectSize.height() > size.height()) {
-			size.setHeight(rectSize.height());
-		}
-	}
-
-	return QRectF(QPointF(), size);
+	qreal xmin, xmax, ymin, ymax;
+	computeSize(xmin, xmax, ymin, ymax);
+	return QRectF(QPointF(), QRectF(QPointF(xmin, ymin), QPointF(xmax, ymax)).size());
 }
 
 void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	for (auto child : children) {
+	/*for (auto child : children) {
 		child->paint(painter, option, widget);
+	}*/
+}
+
+void QGraphicsItemComposite::computeSize(qreal &xmin, qreal &xmax, qreal &ymin, qreal &ymax) const
+{
+	if (children.empty()) {
+		xmin = xmax = ymin = ymax = 0;
+		return;
+	}
+
+	xmin = xmax = children.first()->x();
+	ymin = ymax = children.first()->y();
+
+	for (int i = 1; i < children.length(); i++) {
+		QGraphicsItem* child = children.at(i);
+
+		if (xmin > child->x()) {
+			xmin = child->x();
+		}
+
+		if (xmax < child->x()) {
+			xmax = child->x();
+		}
+
+		if (ymin > child->y()) {
+			ymin = child->y();
+		}
+
+		if (ymax < child->y()) {
+			ymax = child->y();
+		}
 	}
 }

@@ -1,27 +1,50 @@
 #include "commands.h"
 #include "qgraphicsitemcomposite.h"
+#include "buttonwidgetmediator.h"
 
-QGraphicsItem* CommandGroup::execute(GraphicsScene* scene, QGraphicsItem *item)
+void Command::initialize(Mediator *mediator)
 {
-	QGraphicsItemComposite* composite = dynamic_cast<QGraphicsItemComposite*>(item);
-
-	if (composite) {
-		if (composite->contains(item)) {
-			composite->remove(item);
-		} else {
-			composite->add(item);
-		}
-	} else {
-		composite = new QGraphicsItemComposite(item->parentItem());
-		composite->add(item);
-		return composite;
-	}
-
-	return nullptr;
+	this->mediator = mediator;
 }
 
-QGraphicsItem* CommandRemove::execute(GraphicsScene* scene, QGraphicsItem *item)
+void CommandMove::execute(QGraphicsItem *)
 {
-	scene->removeItem(item);
-	return nullptr;
+}
+
+void CommandGroup::initialize(Mediator *mediator)
+{
+	this->mediator = mediator;
+	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
+}
+
+void CommandGroup::execute(QGraphicsItem *)
+{
+}
+
+void CommandGroup::click(const QString &uid)
+{
+	if (uid != "Group") {
+		return;
+	}
+
+	QGraphicsItemComposite* composite = new QGraphicsItemComposite();
+	QList<QGraphicsItem*> selected = mediator->getSelected();
+
+	if (selected.length() <= 1) {
+		return;
+	}
+
+	for (QGraphicsItem* item : selected) {
+		composite->add(item);
+		mediator->getScene()->removeItem(item);
+	}
+
+	composite->adjustPosition();
+	mediator->getScene()->addItem(composite);
+	mediator->clearSelection();
+}
+
+void CommandRemove::execute(QGraphicsItem *item)
+{
+	mediator->getScene()->removeItem(item);
 }

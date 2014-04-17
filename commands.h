@@ -4,22 +4,41 @@
 #include <QGraphicsItem>
 #include "graphicsscene.h"
 
-class ICommand
+class Mediator;
+
+class Command : public QObject
 {
+	Q_OBJECT
 public:
-	virtual QGraphicsItem* execute(GraphicsScene* scene, QGraphicsItem* item) = 0;
+	virtual ~Command(){}
+	virtual void initialize(Mediator* mediator);
+	virtual void execute(QGraphicsItem *item) = 0;
+protected:
+	Mediator* mediator = nullptr;
 };
 
-class CommandGroup : public ICommand
+class CommandMove : public Command
 {
+	Q_OBJECT
 public:
-	virtual QGraphicsItem* execute(GraphicsScene* scene, QGraphicsItem *item);
+	virtual void execute(QGraphicsItem *) final;
 };
 
-class CommandRemove : public ICommand
+class CommandGroup : public Command
 {
+	Q_OBJECT
 public:
-	virtual QGraphicsItem* execute(GraphicsScene* scene, QGraphicsItem *item);
+	virtual void initialize(Mediator *mediator) final;
+	virtual void execute(QGraphicsItem *) final;
+public slots:
+	void click(const QString&uid);
+};
+
+class CommandRemove : public Command
+{
+	Q_OBJECT
+public:
+	virtual void execute(QGraphicsItem *item) final;
 };
 
 #endif // ICOMMAND_HPP

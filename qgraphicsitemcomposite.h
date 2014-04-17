@@ -17,9 +17,12 @@ public:
 	QGraphicsItem* getChild(int index);
 	const QGraphicsItem* getChild(int index) const;
 	bool contains(QGraphicsItem* item) const;
+	void adjustPosition();
 
 	virtual QRectF boundingRect() const final;
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
+protected:
+	void computeSize(qreal &xmin, qreal &xmax, qreal &ymin, qreal &ymax) const;
 private:
 	Composite children;
 };

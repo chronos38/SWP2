@@ -3,21 +3,27 @@
 #include "qexception.h"
 #include "graphicsscene.h"
 
+Mediator::Mediator(QWidget *parent) :
+	QWidget(parent)
+{
+}
+
 ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
-	QWidget(parent),
+	Mediator(parent),
 	layout(new QVBoxLayout())
 {
 	this->setLayout(layout);
 	this->show();
 	QList<QString> uids = factory->getUids();
 
-	commands["Move"] = nullptr;
+	commands["Move"] = new CommandMove();
 	commands["Remove"] = new CommandRemove();
 	commands["Group"] = new CommandGroup();
 
 	QList<QString> commandKeys = commands.keys();
 
 	for (QString& uid : commandKeys) {
+		commands[uid]->initialize(this);
 		registerButton(uid);
 	}
 
@@ -32,6 +38,10 @@ ButtonWidgetMediator::~ButtonWidgetMediator()
 {
 	if (scene) {
 		scene->deleteLater();
+	}
+
+	for (Command* command : commands) {
+		delete command;
 	}
 
 	factory->deleteLater();
@@ -67,13 +77,27 @@ GraphicsScene *ButtonWidgetMediator::getScene() const
 	return scene;
 }
 
+QList<QGraphicsItem *> ButtonWidgetMediator::getSelected() const
+{
+	return selected;
+}
+
+void ButtonWidgetMediator::clearSelection()
+{
+	selected = QList<QGraphicsItem *>();
+}
+
 void ButtonWidgetMediator::sceneClicked()
 {
 	if (!scene) {
 		return;
-	} else if (factory->getUids().contains(uid)) {
+	}
+
+	QGraphicsItem* item = scene->itemAt(scene->getPos(), QTransform());
+
+	if (!item && factory->getUids().contains(uid)) {
 		addItem();
-	} else {
+	} else if (item) {
 		handleItem(scene->itemAt(scene->getPos(), QTransform()));
 	}
 }
@@ -86,6 +110,7 @@ void ButtonWidgetMediator::buttonClicked()
 
 	QPushButton* button = qobject_cast<QPushButton*>(sender());
 	this->uid = registry.key(button);
+	emit clicked(uid);
 }
 
 void ButtonWidgetMediator::addItem()
@@ -112,13 +137,17 @@ void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 		return;
 	}
 
-	ICommand* command = commands[uid];
+	Command* command = commands[uid];
+
+	if (uid == "Move") {
+		if (selected.contains(item)) {
+			selected.removeAll(item);
+		} else {
+			selected.append(item);
+		}
+	}
 
 	if (command) {
-		QGraphicsItem* result = command->execute(scene, item);
-
-		if (result) {
-			scene->addItem(result);
-		}
+		command->execute(item);
 	}
 }
