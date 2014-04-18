@@ -41,4 +41,10 @@ public:
 	virtual void execute(QGraphicsItem *item) final;
 };
 
+class CommandSelect : public Command
+{
+public:
+	virtual void execute(QGraphicsItem *item) final;
+};
+
 #endif // ICOMMAND_HPP

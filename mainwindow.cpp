@@ -23,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setScene(ui->widget->getScene());
 	ui->graphicsView->setMouseTracking(true);
 
+	ui->widget->registerCommand("Select", new CommandSelect());
+	ui->widget->registerCommand("Move", new CommandMove());
+	ui->widget->registerCommand("Remove", new CommandRemove());
+	ui->widget->registerCommand("Group", new CommandGroup());
+
 }
 
 MainWindow::~MainWindow()

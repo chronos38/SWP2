@@ -106,6 +106,8 @@ void QGraphicsItemComposite::computeSize(qreal &xmin, qreal &xmax, qreal &ymin, 
 
 	xmin = xmax = children.first()->x();
 	ymin = ymax = children.first()->y();
+	xmax += children.first()->boundingRect().width();
+	ymax += children.first()->boundingRect().height();
 
 	for (int i = 1; i < children.length(); i++) {
 		QGraphicsItem* child = children.at(i);
@@ -114,16 +116,16 @@ void QGraphicsItemComposite::computeSize(qreal &xmin, qreal &xmax, qreal &ymin, 
 			xmin = child->x();
 		}
 
-		if (xmax < child->x()) {
-			xmax = child->x();
+		if (xmax < child->x() + child->boundingRect().width()) {
+			xmax = child->x() + child->boundingRect().width();
 		}
 
 		if (ymin > child->y()) {
 			ymin = child->y();
 		}
 
-		if (ymax < child->y()) {
-			ymax = child->y();
+		if (ymax < child->y() + child->boundingRect().height()) {
+			ymax = child->y() + child->boundingRect().height();
 		}
 	}
 }

@@ -16,17 +16,6 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 	this->show();
 	QList<QString> uids = factory->getUids();
 
-	commands["Move"] = new CommandMove();
-	commands["Remove"] = new CommandRemove();
-	commands["Group"] = new CommandGroup();
-
-	QList<QString> commandKeys = commands.keys();
-
-	for (QString& uid : commandKeys) {
-		commands[uid]->initialize(this);
-		registerButton(uid);
-	}
-
 	for (QString& uid : uids) {
 		registerButton(uid);
 	}
@@ -45,6 +34,13 @@ ButtonWidgetMediator::~ButtonWidgetMediator()
 	}
 
 	factory->deleteLater();
+}
+
+void ButtonWidgetMediator::registerCommand(const QString &uid, Command *command)
+{
+	commands[uid] = command;
+	command->initialize(this);
+	registerButton(uid);
 }
 
 void ButtonWidgetMediator::registerButton(const QString &uid)
@@ -77,9 +73,18 @@ GraphicsScene *ButtonWidgetMediator::getScene() const
 	return scene;
 }
 
-QList<QGraphicsItem *> ButtonWidgetMediator::getSelected() const
+QList<QGraphicsItem *> ButtonWidgetMediator::getSelection() const
 {
 	return selected;
+}
+
+void ButtonWidgetMediator::toggleSelection(QGraphicsItem *item)
+{
+	if (selected.contains(item)) {
+		selected.removeAll(item);
+	} else {
+		selected.append(item);
+	}
 }
 
 void ButtonWidgetMediator::clearSelection()
@@ -138,14 +143,6 @@ void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 	}
 
 	Command* command = commands[uid];
-
-	if (uid == "Move") {
-		if (selected.contains(item)) {
-			selected.removeAll(item);
-		} else {
-			selected.append(item);
-		}
-	}
 
 	if (command) {
 		command->execute(item);

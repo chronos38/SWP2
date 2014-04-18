@@ -13,7 +13,7 @@ void CommandMove::execute(QGraphicsItem *)
 
 void CommandGroup::initialize(Mediator *mediator)
 {
-	this->mediator = mediator;
+	Command::initialize(mediator);
 	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
 }
 
@@ -28,7 +28,7 @@ void CommandGroup::click(const QString &uid)
 	}
 
 	QGraphicsItemComposite* composite = new QGraphicsItemComposite();
-	QList<QGraphicsItem*> selected = mediator->getSelected();
+	QList<QGraphicsItem*> selected = mediator->getSelection();
 
 	if (selected.length() <= 1) {
 		return;
@@ -47,4 +47,14 @@ void CommandGroup::click(const QString &uid)
 void CommandRemove::execute(QGraphicsItem *item)
 {
 	mediator->getScene()->removeItem(item);
+}
+
+
+void CommandSelect::execute(QGraphicsItem *item)
+{
+	if (!item) {
+		return;
+	}
+
+	mediator->toggleSelection(item);
 }

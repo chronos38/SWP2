@@ -1,7 +1,7 @@
 #ifndef BUTTONWIDGETMEDIATOR_H
 #define BUTTONWIDGETMEDIATOR_H
 
-#include <QHash>
+#include <QMap>
 #include <QString>
 #include <QWidget>
 #include <QPushButton>
@@ -19,8 +19,12 @@ signals:
 public:
 	Mediator(QWidget* parent = 0);
 	virtual ~Mediator(){}
+	virtual void registerCommand(const QString& uid, Command* command) = 0;
+	virtual void registerButton(const QString& uid) = 0;
+	virtual void registerScene(GraphicsScene* scene) = 0;
 	virtual GraphicsScene* getScene() const = 0;
-	virtual QList<QGraphicsItem*> getSelected() const = 0;
+	virtual QList<QGraphicsItem*> getSelection() const = 0;
+	virtual void toggleSelection(QGraphicsItem* item) = 0;
 	virtual void clearSelection() = 0;
 };
 
@@ -31,10 +35,12 @@ public:
 	explicit ButtonWidgetMediator(QWidget *parent = 0);
 	virtual ~ButtonWidgetMediator();
 
-	virtual void registerButton(const QString& uid);
-	virtual void registerScene(GraphicsScene* scene);
+	virtual void registerCommand(const QString& uid, Command* command) final;
+	virtual void registerButton(const QString& uid) final;
+	virtual void registerScene(GraphicsScene* scene) final;
 	virtual GraphicsScene *getScene() const final;
-	virtual QList<QGraphicsItem*> getSelected() const final;
+	virtual QList<QGraphicsItem*> getSelection() const final;
+	virtual void toggleSelection(QGraphicsItem *item) final;
 	virtual void clearSelection() final;
 
 private slots:
@@ -47,8 +53,8 @@ protected:
 
 private:
 	QGraphicsItemFactory* factory = new QGraphicsItemFactory();
-	QHash<QString, QPushButton*> registry;
-	QHash<QString, Command*> commands;
+	QMap<QString, QPushButton*> registry;
+	QMap<QString, Command*> commands;
 	QList<QGraphicsItem*> selected;
 	GraphicsScene* scene = nullptr;
 	QVBoxLayout *layout = nullptr;
