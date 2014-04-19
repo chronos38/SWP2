@@ -18,7 +18,6 @@ public:
 
 private:
 	Ui::MainWindow *ui = nullptr;
-	GraphicsScene *m_scene = nullptr;
 };
 
 #endif // MAINWINDOW_H

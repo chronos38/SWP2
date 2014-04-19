@@ -7,7 +7,7 @@ class GraphicsScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
-	explicit GraphicsScene(QObject *parent = 0);
+	explicit GraphicsScene(int width, int height, QObject *parent = 0);
 	QPointF getPos() const;
 
 signals:

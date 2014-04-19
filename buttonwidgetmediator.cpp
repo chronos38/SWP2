@@ -20,7 +20,7 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 		registerButton(uid);
 	}
 
-	registerScene(new GraphicsScene());
+	registerScene(new GraphicsScene(width(), height()));
 }
 
 ButtonWidgetMediator::~ButtonWidgetMediator()
@@ -81,8 +81,10 @@ QList<QGraphicsItem *> ButtonWidgetMediator::getSelection() const
 void ButtonWidgetMediator::toggleSelection(QGraphicsItem *item)
 {
 	if (selected.contains(item)) {
+		dynamic_cast<ColorSetter*>(item)->setColor(Qt::black);
 		selected.removeAll(item);
 	} else {
+		dynamic_cast<ColorSetter*>(item)->setColor(Qt::red);
 		selected.append(item);
 	}
 }
@@ -125,12 +127,16 @@ void ButtonWidgetMediator::addItem()
 	}
 
 	QGraphicsItem* item = factory->create(uid);
+	QPointF pos = scene->getPos();
+	QRectF rect;
 
 	if (!item) {
 		return;
 	}
 
-	item->setPos(scene->getPos());
+	rect = item->boundingRect();
+	pos = QPointF(pos.x() - rect.width() / 2, pos.y() - rect.height() / 2);
+	item->setPos(pos);
 	scene->addItem(item);
 }
 

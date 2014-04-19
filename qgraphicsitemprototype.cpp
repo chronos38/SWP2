@@ -22,6 +22,8 @@ void QGraphicsItemPrototype::paint(QPainter *painter, const QStyleOptionGraphics
 		throw QArgumentNullException();
 	}
 
+	painter->setPen(pen);
+
 	if(m_isEllipse) {
 		painter->drawEllipse(m_polygon.boundingRect());
 	} else {
@@ -34,4 +36,9 @@ QGraphicsItemPrototype *QGraphicsItemPrototype::clone()
 	/*QObject verbietet echten copyconstructor*/
 	return new QGraphicsItemPrototype(m_polygon, m_isEllipse, parentItem());
 
+}
+
+void QGraphicsItemPrototype::setColor(QColor color)
+{
+	pen = QPen(color);
 }

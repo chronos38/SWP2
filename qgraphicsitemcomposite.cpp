@@ -8,6 +8,18 @@ QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent) :
 	setFlag(QGraphicsItem::ItemIsMovable, true);
 }
 
+QGraphicsItemComposite::Composite QGraphicsItemComposite::release()
+{
+	Composite result = children;
+
+	for (QGraphicsItem* child : children) {
+		child->setParentItem(0);
+	}
+
+	children.clear();
+	return result;
+}
+
 void QGraphicsItemComposite::add(QGraphicsItem *component)
 {
 	// check argument
@@ -15,9 +27,14 @@ void QGraphicsItemComposite::add(QGraphicsItem *component)
 		throw QArgumentNullException();
 	}
 
+	if (component->parentItem()) {
+		dynamic_cast<QGraphicsItemComposite*>(component->parentItem())->remove(component);
+	}
+
+	dynamic_cast<ColorSetter*>(component)->setColor(Qt::green);
 	component->setParentItem(this);
 	component->setFlag(QGraphicsItem::ItemIsMovable, false);
-	children.push_back(component);
+	children.append(component);
 }
 
 void QGraphicsItemComposite::remove(QGraphicsItem *component)
@@ -35,7 +52,8 @@ void QGraphicsItemComposite::remove(QGraphicsItem *component)
 		return;
 	}
 
-	getChild(index)->setParentItem(parentItem());
+	dynamic_cast<ColorSetter*>(children.at(index))->setColor(Qt::black);
+	children.at(index)->setParentItem(0);
 	component->setFlag(QGraphicsItem::ItemIsMovable, true);
 	children.removeAt(index);
 }
@@ -92,9 +110,19 @@ QRectF QGraphicsItemComposite::boundingRect() const
 
 void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	/*for (auto child : children) {
-		child->paint(painter, option, widget);
-	}*/
+}
+
+void QGraphicsItemComposite::setColor(QColor color)
+{
+	if (color == Qt::black) {
+		for (QGraphicsItem* child : children) {
+			dynamic_cast<ColorSetter*>(child)->setColor(Qt::green);
+		}
+	} else {
+		for (QGraphicsItem* child : children) {
+			dynamic_cast<ColorSetter*>(child)->setColor(color);
+		}
+	}
 }
 
 void QGraphicsItemComposite::computeSize(qreal &xmin, qreal &xmax, qreal &ymin, qreal &ymax) const

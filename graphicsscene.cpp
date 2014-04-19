@@ -1,9 +1,10 @@
 #include "graphicsscene.h"
 #include <QGraphicsSceneMouseEvent>
 
-GraphicsScene::GraphicsScene(QObject *parent) :
+GraphicsScene::GraphicsScene(int width, int height, QObject *parent) :
 	QGraphicsScene(parent)
 {
+	setSceneRect(0, 0, width, height);
 }
 
 QPointF GraphicsScene::getPos() const
@@ -28,6 +29,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	if (pressed && event->button() == Qt::LeftButton) {
+		update();
 		position = event->scenePos();
 		pressed = false;
 		emit clicked();

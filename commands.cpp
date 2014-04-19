@@ -35,8 +35,18 @@ void CommandGroup::click(const QString &uid)
 	}
 
 	for (QGraphicsItem* item : selected) {
-		composite->add(item);
-		mediator->getScene()->removeItem(item);
+		QGraphicsItemComposite* c = nullptr;
+
+		if ((c = dynamic_cast<QGraphicsItemComposite*>(item))) {
+			auto children = c->release();
+
+			for (QGraphicsItem* child : children) {
+				mediator->getScene()->addItem(child);
+			}
+		} else {
+			composite->add(item);
+			mediator->getScene()->removeItem(item);
+		}
 	}
 
 	composite->adjustPosition();

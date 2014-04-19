@@ -3,8 +3,16 @@
 
 #include <QGraphicsItem>
 #include <QPolygonF>
+#include <QPen>
 
-class QGraphicsItemPrototype : public QGraphicsItem
+class ColorSetter
+{
+public:
+	virtual void setColor(QColor color) = 0;
+protected:
+};
+
+class QGraphicsItemPrototype : public QGraphicsItem, public ColorSetter
 {
 public:
 	QGraphicsItemPrototype() = delete;
@@ -14,9 +22,11 @@ public:
 	virtual QRectF boundingRect() const;
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
 	virtual QGraphicsItemPrototype *clone();
+	virtual void setColor(QColor color) final;
 private:
 	QPolygonF m_polygon;
 	bool m_isEllipse;
+	QPen pen = QPen(Qt::black);
 };
 
 #endif // QGRAPHICSITEMPROTOTYPE_H
