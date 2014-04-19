@@ -100,12 +100,12 @@ void ButtonWidgetMediator::sceneClicked()
 		return;
 	}
 
-	QGraphicsItem* item = scene->itemAt(scene->getPos(), QTransform());
+	QGraphicsItem* item = getParent(scene->itemAt(scene->getPos(), QTransform()));
 
 	if (!item && factory->getUids().contains(uid)) {
 		addItem();
 	} else if (item) {
-		handleItem(scene->itemAt(scene->getPos(), QTransform()));
+		handleItem(item);
 	}
 }
 
@@ -153,4 +153,14 @@ void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 	if (command) {
 		command->execute(item);
 	}
+}
+
+QGraphicsItem *ButtonWidgetMediator::getParent(QGraphicsItem *item)
+{
+	if (!item) {
+		return nullptr;
+	}
+
+	QGraphicsItem* result = item->parentItem();
+	return (result ? getParent(result) : item);
 }

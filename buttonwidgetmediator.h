@@ -50,6 +50,7 @@ private slots:
 protected:
 	void addItem();
 	void handleItem(QGraphicsItem* item);
+	QGraphicsItem *getParent(QGraphicsItem *item);
 
 private:
 	QGraphicsItemFactory* factory = new QGraphicsItemFactory();
