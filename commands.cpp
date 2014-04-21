@@ -27,10 +27,11 @@ void CommandGroup::click(const QString &uid)
 		return;
 	}
 
-	QGraphicsItemComposite* composite = new QGraphicsItemComposite();
 	QList<QGraphicsItem*> selected = mediator->getSelection();
 
-	if (selected.length() <= 1) {
+	if (selected.empty()) {
+		return;
+	} else if (selected.length() == 1) {
 		QGraphicsItemComposite* c = nullptr;
 
 		if ((c = dynamic_cast<QGraphicsItemComposite*>(selected.first()))) {
@@ -39,6 +40,8 @@ void CommandGroup::click(const QString &uid)
 
 		return;
 	}
+
+	QGraphicsItemComposite* composite = new QGraphicsItemComposite();
 
 	for (QGraphicsItem* item : selected) {
 		QGraphicsItemComposite* c = nullptr;

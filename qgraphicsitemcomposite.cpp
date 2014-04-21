@@ -11,6 +11,8 @@ QGraphicsItemComposite::QGraphicsItemComposite(QGraphicsItem *parent) :
 QGraphicsItemComposite::Composite QGraphicsItemComposite::release()
 {
 	Composite result = children;
+	qreal x = this->x();
+	qreal y = this->y();
 
 	for (QGraphicsItem* child : children) {
 		if (x < 0) {
@@ -107,8 +109,6 @@ void QGraphicsItemComposite::adjustPosition()
 
 	computeSize(xmin, xmax, ymin, ymax);
 	setPos(xmin, ymin);
-	x = xmin;
-	y = ymin;
 
 	for (QGraphicsItem* child : children) {
 		if (xmin < 0) {
