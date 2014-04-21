@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include "graphicsscene.h"
 #include "qgraphicsitemfactory.h"
+#include "qgraphicspinprototype.h"
 
 class Mediator;
 
@@ -16,6 +17,8 @@ public:
 	virtual void execute(QGraphicsItem *item);
 public slots:
 	virtual void click(const QString&uid);
+	virtual void mousepressed();
+	virtual void mousereleased();
 	virtual void mousemoved(const QPointF& pos);
 protected:
 	Mediator* mediator = nullptr;
@@ -91,6 +94,40 @@ public slots:
 	virtual void click(const QString&uid) final;
 private:
 	QString uid;
+};
+
+class CommandPin1 : public Command
+{
+	Q_OBJECT
+public:
+	virtual void execute(QGraphicsItem* item) final;
+public slots:
+	virtual void click(const QString&uid) final;
+	virtual void mousepressed() final;
+	virtual void mousereleased() final;
+	virtual void mousemoved(const QPointF& pos) final;
+private:
+	QString uid;
+	bool draw = false;
+	QGraphicsPin* item = nullptr;
+	QPointF point;
+};
+
+class CommandPin2 : public Command
+{
+	Q_OBJECT
+public:
+	virtual void execute(QGraphicsItem* item) final;
+public slots:
+	virtual void click(const QString&uid) final;
+	virtual void mousepressed() final;
+	virtual void mousereleased() final;
+	virtual void mousemoved(const QPointF& pos) final;
+private:
+	QString uid;
+	bool draw = false;
+	QGraphicsAirBrush* item = nullptr;
+	QPointF point;
 };
 
 #endif // ICOMMAND_HPP

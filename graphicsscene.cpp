@@ -15,6 +15,7 @@ QPointF GraphicsScene::getPos() const
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 	if (pressed) {
+		position = event->scenePos();
 		emit mousemove(event->scenePos());
 	}
 
@@ -24,7 +25,9 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
+		position = event->scenePos();
 		pressed = true;
+		emit mousepressed();
 	}
 
 	QGraphicsScene::mousePressEvent(event);
@@ -37,6 +40,9 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		position = event->scenePos();
 		pressed = false;
 		emit clicked();
+		emit mousereleased();
+	} else if (event->button() == Qt::LeftButton) {
+		emit mousereleased();
 	}
 
 	QGraphicsScene::mouseReleaseEvent(event);

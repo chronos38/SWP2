@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->widget->registerCommand("Group", new CommandGroup());
 	ui->widget->registerCommand("Enlarge", new CommandEnlarge());
 	ui->widget->registerCommand("Reduce", new CommandReduce());
+	ui->widget->registerCommand("Pin 1", new CommandPin1());
+	ui->widget->registerCommand("Pin 2", new CommandPin2());
 
 	for (QString& uid : factory.getUids()) {
 		ui->widget->registerCommand(uid, new CommandGraphicsItem(uid));

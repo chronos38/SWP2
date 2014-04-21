@@ -16,6 +16,8 @@ class Mediator : public QWidget
 	Q_OBJECT
 signals:
 	void clicked(const QString& uid);
+	void mousepressed();
+	void mousereleased();
 	void mousemove(const QPointF & pos);
 public:
 	Mediator(QWidget* parent = 0);
@@ -41,9 +43,6 @@ public:
 	virtual QList<QGraphicsItem*> getSelection() const final;
 	virtual void toggleSelection(QGraphicsItem *item) final;
 	virtual void clearSelection() final;
-
-public slots:
-	void mousemoved(const QPointF& pos);
 
 private slots:
 	void sceneClicked();

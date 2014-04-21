@@ -59,7 +59,9 @@ void ButtonWidgetMediator::registerScene(GraphicsScene *scene)
 
 	this->scene = scene;
 	connect(this->scene, SIGNAL(clicked()), this, SLOT(sceneClicked()));
-	connect(this->scene, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
+	//connect(this->scene, SIGNAL(mousepressed()), this, SLOT(mousepressed()));
+	//connect(this->scene, SIGNAL(mousereleased()), this, SLOT(mousereleased()));
+	//connect(this->scene, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
 }
 
 GraphicsScene *ButtonWidgetMediator::getScene() const
@@ -86,11 +88,6 @@ void ButtonWidgetMediator::toggleSelection(QGraphicsItem *item)
 void ButtonWidgetMediator::clearSelection()
 {
 	selected = QList<QGraphicsItem *>();
-}
-
-void ButtonWidgetMediator::mousemoved(const QPointF &pos)
-{
-	emit mousemove(pos);
 }
 
 void ButtonWidgetMediator::sceneClicked()

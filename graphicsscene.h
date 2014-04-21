@@ -12,6 +12,8 @@ public:
 
 signals:
 	void clicked();
+	void mousepressed();
+	void mousereleased();
 	void mousemove(const QPointF & pos);
 
 public slots:
