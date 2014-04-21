@@ -5,16 +5,20 @@
 void Command::initialize(Mediator *mediator)
 {
 	this->mediator = mediator;
+	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
+	connect(mediator, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
+}
+
+void Command::click(const QString &uid)
+{
+}
+
+void Command::mousemoved(const QPointF &pos)
+{
 }
 
 void CommandMove::execute(QGraphicsItem *)
 {
-}
-
-void CommandGroup::initialize(Mediator *mediator)
-{
-	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
-	Command::initialize(mediator);
 }
 
 void CommandGroup::execute(QGraphicsItem *)
@@ -61,6 +65,8 @@ void CommandGroup::click(const QString &uid)
 	composite->adjustPosition();
 	mediator->getScene()->addItem(composite);
 	mediator->clearSelection();
+
+	Command::click(uid);
 }
 
 void CommandRemove::execute(QGraphicsItem *item)
@@ -83,20 +89,15 @@ CommandBrush::CommandBrush(const QString &)
 {
 }
 
-void CommandBrush::initialize(Mediator *mediator)
-{
-	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
-	connect(mediator, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
-	Command::initialize(mediator);
-}
-
 void CommandBrush::execute(QGraphicsItem *item)
 {
 }
 
 void CommandBrush::click(const QString &uid)
 {
-	draw = (uid == "Pen");
+	draw = (uid == "Brush");
+
+	Command::click(uid);
 }
 
 void CommandBrush::mousemoved(const QPointF &pos)
@@ -104,6 +105,8 @@ void CommandBrush::mousemoved(const QPointF &pos)
 	if (!draw) {
 		return;
 	}
+
+	Command::mousemoved(pos);
 }
 
 
@@ -131,4 +134,33 @@ void CommandGraphicsItem::execute(QGraphicsItem *i)
 	pos = QPointF(pos.x() - rect.width() / 2, pos.y() - rect.height() / 2);
 	item->setPos(pos);
 	scene->addItem(item);
+}
+
+void CommandResize::execute(QGraphicsItem *item)
+{
+}
+
+void CommandResize::click(const QString &uid)
+{
+	QList<QGraphicsItem*> selection = mediator->getSelection();
+
+	if (uid == "Enlarge") {
+		for (QGraphicsItem* item : selection) {
+			qreal scale = item->scale();
+
+			if (scale <= 2.0) {
+				item->setScale(scale * 1.1);
+			}
+		}
+	} else if (uid == "Reduce") {
+		for (QGraphicsItem* item : selection) {
+			qreal scale = item->scale();
+
+			if (scale >= 0.1) {
+				item->setScale(scale / 1.1);
+			}
+		}
+	}
+
+	Command::click(uid);
 }

@@ -21,7 +21,6 @@ public:
 	Mediator(QWidget* parent = 0);
 	virtual ~Mediator(){}
 	virtual void registerCommand(const QString& uid, Command* command) = 0;
-	virtual void registerButton(const QString& uid) = 0;
 	virtual void registerScene(GraphicsScene* scene) = 0;
 	virtual GraphicsScene* getScene() const = 0;
 	virtual QList<QGraphicsItem*> getSelection() const = 0;
@@ -37,7 +36,6 @@ public:
 	virtual ~ButtonWidgetMediator();
 
 	virtual void registerCommand(const QString& uid, Command* command) final;
-	virtual void registerButton(const QString& uid) final;
 	virtual void registerScene(GraphicsScene* scene) final;
 	virtual GraphicsScene *getScene() const final;
 	virtual QList<QGraphicsItem*> getSelection() const final;
@@ -54,6 +52,7 @@ private slots:
 protected:
 	void handleItem(QGraphicsItem* item);
 	QGraphicsItem *getParent(QGraphicsItem *item);
+	void registerButton(const QString& uid);
 
 private:
 	QMap<QString, QPushButton*> registry;
