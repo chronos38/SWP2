@@ -14,11 +14,6 @@ ButtonWidgetMediator::ButtonWidgetMediator(QWidget *parent) :
 {
 	this->setLayout(layout);
 	this->show();
-	QList<QString> uids = factory->getUids();
-
-	for (QString& uid : uids) {
-		registerButton(uid);
-	}
 
 	registerScene(new GraphicsScene(width(), height()));
 }
@@ -32,8 +27,6 @@ ButtonWidgetMediator::~ButtonWidgetMediator()
 	for (Command* command : commands) {
 		delete command;
 	}
-
-	factory->deleteLater();
 }
 
 void ButtonWidgetMediator::registerCommand(const QString &uid, Command *command)
@@ -66,6 +59,7 @@ void ButtonWidgetMediator::registerScene(GraphicsScene *scene)
 
 	this->scene = scene;
 	connect(this->scene, SIGNAL(clicked()), this, SLOT(sceneClicked()));
+	connect(this->scene, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
 }
 
 GraphicsScene *ButtonWidgetMediator::getScene() const
@@ -94,19 +88,18 @@ void ButtonWidgetMediator::clearSelection()
 	selected = QList<QGraphicsItem *>();
 }
 
+void ButtonWidgetMediator::mousemoved(const QPointF &pos)
+{
+	emit mousemove(pos);
+}
+
 void ButtonWidgetMediator::sceneClicked()
 {
 	if (!scene) {
 		return;
 	}
 
-	QGraphicsItem* item = getParent(scene->itemAt(scene->getPos(), QTransform()));
-
-	if (!item && factory->getUids().contains(uid)) {
-		addItem();
-	} else if (item) {
-		handleItem(item);
-	}
+	handleItem(getParent(scene->itemAt(scene->getPos(), QTransform())));
 }
 
 void ButtonWidgetMediator::buttonClicked()
@@ -120,31 +113,9 @@ void ButtonWidgetMediator::buttonClicked()
 	emit clicked(uid);
 }
 
-void ButtonWidgetMediator::addItem()
-{
-	if (!scene) {
-		throw QException();
-	}
-
-	QGraphicsItem* item = factory->create(uid);
-	QPointF pos = scene->getPos();
-	QRectF rect;
-
-	if (!item) {
-		return;
-	}
-
-	rect = item->boundingRect();
-	pos = QPointF(pos.x() - rect.width() / 2, pos.y() - rect.height() / 2);
-	item->setPos(pos);
-	scene->addItem(item);
-}
-
 void ButtonWidgetMediator::handleItem(QGraphicsItem *item)
 {
 	if (!scene) {
-		return;
-	} else if (!item) {
 		return;
 	}
 

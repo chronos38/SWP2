@@ -16,7 +16,7 @@ class Mediator : public QWidget
 	Q_OBJECT
 signals:
 	void clicked(const QString& uid);
-	void mousemove(const QPoint & pos);
+	void mousemove(const QPointF & pos);
 public:
 	Mediator(QWidget* parent = 0);
 	virtual ~Mediator(){}
@@ -44,17 +44,18 @@ public:
 	virtual void toggleSelection(QGraphicsItem *item) final;
 	virtual void clearSelection() final;
 
+public slots:
+	void mousemoved(const QPointF& pos);
+
 private slots:
 	void sceneClicked();
 	void buttonClicked();
 
 protected:
-	void addItem();
 	void handleItem(QGraphicsItem* item);
 	QGraphicsItem *getParent(QGraphicsItem *item);
 
 private:
-	QGraphicsItemFactory* factory = new QGraphicsItemFactory();
 	QMap<QString, QPushButton*> registry;
 	QMap<QString, Command*> commands;
 	QList<QGraphicsItem*> selected;

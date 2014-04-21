@@ -22,7 +22,7 @@ public:
 	void adjustPosition();
 
 	virtual QRectF boundingRect() const final;
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
+	virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) final;
 
 	virtual void setColor(QColor color) final;
 protected:

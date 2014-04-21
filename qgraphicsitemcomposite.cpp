@@ -133,7 +133,7 @@ QRectF QGraphicsItemComposite::boundingRect() const
 	return QRectF(QPointF(), QRectF(QPointF(xmin, ymin), QPointF(xmax, ymax)).size());
 }
 
-void QGraphicsItemComposite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void QGraphicsItemComposite::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {
 }
 

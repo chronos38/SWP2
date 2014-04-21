@@ -14,6 +14,10 @@ QPointF GraphicsScene::getPos() const
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (pressed) {
+		emit mousemove(event->scenePos());
+	}
+
 	QGraphicsScene::mouseMoveEvent(event);
 }
 

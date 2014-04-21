@@ -13,8 +13,8 @@ void CommandMove::execute(QGraphicsItem *)
 
 void CommandGroup::initialize(Mediator *mediator)
 {
-	Command::initialize(mediator);
 	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
+	Command::initialize(mediator);
 }
 
 void CommandGroup::execute(QGraphicsItem *)
@@ -73,4 +73,59 @@ void CommandSelect::execute(QGraphicsItem *item)
 	}
 
 	mediator->toggleSelection(item);
+}
+
+
+CommandBrush::CommandBrush(const QString &)
+{
+}
+
+void CommandBrush::initialize(Mediator *mediator)
+{
+	connect(mediator, SIGNAL(clicked(QString)), this, SLOT(click(QString)));
+	connect(mediator, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
+	Command::initialize(mediator);
+}
+
+void CommandBrush::execute(QGraphicsItem *item)
+{
+}
+
+void CommandBrush::click(const QString &uid)
+{
+	draw = (uid == "Pen");
+}
+
+void CommandBrush::mousemoved(const QPointF &pos)
+{
+	if (!draw) {
+		return;
+	}
+}
+
+
+CommandGraphicsItem::CommandGraphicsItem(const QString &uid)
+{
+	this->uid = uid;
+}
+
+void CommandGraphicsItem::execute(QGraphicsItem *i)
+{
+	if (i) {
+		return;
+	}
+
+	GraphicsScene* scene = mediator->getScene();
+	QGraphicsItem* item = factory.create(uid);
+	QPointF pos = scene->getPos();
+	QRectF rect;
+
+	if (!item) {
+		return;
+	}
+
+	rect = item->boundingRect();
+	pos = QPointF(pos.x() - rect.width() / 2, pos.y() - rect.height() / 2);
+	item->setPos(pos);
+	scene->addItem(item);
 }
