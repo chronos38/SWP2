@@ -9,25 +9,21 @@ void Command::initialize(Mediator *mediator)
 	connect(mediator, SIGNAL(mousemove(QPointF)), this, SLOT(mousemoved(QPointF)));
 }
 
-void Command::click(const QString &uid)
+void Command::execute(QGraphicsItem *)
 {
 }
 
-void Command::mousemoved(const QPointF &pos)
+void Command::click(const QString &)
 {
 }
 
-void CommandMove::execute(QGraphicsItem *)
-{
-}
-
-void CommandGroup::execute(QGraphicsItem *)
+void Command::mousemoved(const QPointF &)
 {
 }
 
 void CommandGroup::click(const QString &uid)
 {
-	if (uid != "Group") {
+	if (uid.compare("group", Qt::CaseInsensitive)) {
 		return;
 	}
 
@@ -72,6 +68,8 @@ void CommandGroup::click(const QString &uid)
 void CommandRemove::execute(QGraphicsItem *item)
 {
 	mediator->getScene()->removeItem(item);
+
+	Command::execute(item);
 }
 
 
@@ -82,6 +80,8 @@ void CommandSelect::execute(QGraphicsItem *item)
 	}
 
 	mediator->toggleSelection(item);
+
+	Command::execute(item);
 }
 
 
@@ -91,11 +91,12 @@ CommandBrush::CommandBrush(const QString &)
 
 void CommandBrush::execute(QGraphicsItem *item)
 {
+	Command::execute(item);
 }
 
 void CommandBrush::click(const QString &uid)
 {
-	draw = (uid == "Brush");
+	draw = (!uid.compare("brush", Qt::CaseInsensitive));
 
 	Command::click(uid);
 }
@@ -134,17 +135,31 @@ void CommandGraphicsItem::execute(QGraphicsItem *i)
 	pos = QPointF(pos.x() - rect.width() / 2, pos.y() - rect.height() / 2);
 	item->setPos(pos);
 	scene->addItem(item);
+
+	Command::execute(item);
 }
 
-void CommandResize::execute(QGraphicsItem *item)
+void CommandEnlarge::execute(QGraphicsItem *item)
 {
+	if (!item) {
+		return;
+	} else if (!uid.compare("enlarge", Qt::CaseInsensitive)) {
+		qreal scale = item->scale();
+
+		if (scale <= 2.0) {
+			item->setScale(scale * 1.1);
+		}
+	}
+
+	Command::execute(item);
 }
 
-void CommandResize::click(const QString &uid)
+void CommandEnlarge::click(const QString &uid)
 {
 	QList<QGraphicsItem*> selection = mediator->getSelection();
+	this->uid = uid;
 
-	if (uid == "Enlarge") {
+	if (!uid.compare("enlarge", Qt::CaseInsensitive)) {
 		for (QGraphicsItem* item : selection) {
 			qreal scale = item->scale();
 
@@ -152,11 +167,36 @@ void CommandResize::click(const QString &uid)
 				item->setScale(scale * 1.1);
 			}
 		}
-	} else if (uid == "Reduce") {
+	}
+
+	Command::click(uid);
+}
+
+void CommandReduce::execute(QGraphicsItem *item)
+{
+	if (!item) {
+		return;
+	} else if (!uid.compare("reduce", Qt::CaseInsensitive)) {
+		qreal scale = item->scale();
+
+		if (scale >= 0.5) {
+			item->setScale(scale / 1.1);
+		}
+	}
+
+	Command::execute(item);
+}
+
+void CommandReduce::click(const QString &uid)
+{
+	QList<QGraphicsItem*> selection = mediator->getSelection();
+	this->uid = uid;
+
+	if (!uid.compare("reduce", Qt::CaseInsensitive)) {
 		for (QGraphicsItem* item : selection) {
 			qreal scale = item->scale();
 
-			if (scale >= 0.1) {
+			if (scale >= 0.5) {
 				item->setScale(scale / 1.1);
 			}
 		}

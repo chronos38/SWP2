@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->widget->registerCommand("Move", new CommandMove());
 	ui->widget->registerCommand("Remove", new CommandRemove());
 	ui->widget->registerCommand("Group", new CommandGroup());
-	ui->widget->registerCommand("Enlarge", new CommandResize());
-	ui->widget->registerCommand("Reduce", new CommandResize());
+	ui->widget->registerCommand("Enlarge", new CommandEnlarge());
+	ui->widget->registerCommand("Reduce", new CommandReduce());
 
 	for (QString& uid : factory.getUids()) {
 		ui->widget->registerCommand(uid, new CommandGraphicsItem(uid));

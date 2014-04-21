@@ -13,7 +13,7 @@ class Command : public QObject
 public:
 	virtual ~Command(){}
 	virtual void initialize(Mediator* mediator);
-	virtual void execute(QGraphicsItem *item) = 0;
+	virtual void execute(QGraphicsItem *item);
 public slots:
 	virtual void click(const QString&uid);
 	virtual void mousemoved(const QPointF& pos);
@@ -25,14 +25,11 @@ class CommandMove : public Command
 {
 	Q_OBJECT
 public:
-	virtual void execute(QGraphicsItem *) final;
 };
 
 class CommandGroup : public Command
 {
 	Q_OBJECT
-public:
-	virtual void execute(QGraphicsItem *) final;
 public slots:
 	virtual void click(const QString&uid) final;
 };
@@ -74,13 +71,26 @@ private:
 	QString uid;
 };
 
-class CommandResize : public Command
+class CommandEnlarge : public Command
 {
 	Q_OBJECT
 public:
 	virtual void execute(QGraphicsItem* item) final;
 public slots:
 	virtual void click(const QString&uid) final;
+private:
+	QString uid;
+};
+
+class CommandReduce : public Command
+{
+	Q_OBJECT
+public:
+	virtual void execute(QGraphicsItem* item) final;
+public slots:
+	virtual void click(const QString&uid) final;
+private:
+	QString uid;
 };
 
 #endif // ICOMMAND_HPP
