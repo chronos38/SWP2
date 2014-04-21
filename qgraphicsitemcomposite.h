@@ -29,6 +29,7 @@ protected:
 	void computeSize(qreal &xmin, qreal &xmax, qreal &ymin, qreal &ymax) const;
 private:
 	Composite children;
+	qreal x, y;
 };
 
 #endif // GRAFICSITEMCOMPOSITE_HPP

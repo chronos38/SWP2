@@ -31,6 +31,12 @@ void CommandGroup::click(const QString &uid)
 	QList<QGraphicsItem*> selected = mediator->getSelection();
 
 	if (selected.length() <= 1) {
+		QGraphicsItemComposite* c = nullptr;
+
+		if ((c = dynamic_cast<QGraphicsItemComposite*>(selected.first()))) {
+			c->release();
+		}
+
 		return;
 	}
 
@@ -41,7 +47,7 @@ void CommandGroup::click(const QString &uid)
 			auto children = c->release();
 
 			for (QGraphicsItem* child : children) {
-				mediator->getScene()->addItem(child);
+				composite->add(child);
 			}
 		} else {
 			composite->add(item);

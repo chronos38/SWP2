@@ -13,7 +13,21 @@ QGraphicsItemComposite::Composite QGraphicsItemComposite::release()
 	Composite result = children;
 
 	for (QGraphicsItem* child : children) {
+		if (x < 0) {
+			child->setX(child->x() - std::abs(x));
+		} else {
+			child->setX(child->x() + std::abs(x));
+		}
+
+		if (y < 0) {
+			child->setY(child->y() - std::abs(y));
+		} else {
+			child->setY(child->y() + std::abs(y));
+		}
+
 		child->setParentItem(0);
+		child->setFlag(QGraphicsItem::ItemIsMovable, true);
+		dynamic_cast<ColorSetter*>(child)->setColor(Qt::black);
 	}
 
 	children.clear();
@@ -93,10 +107,21 @@ void QGraphicsItemComposite::adjustPosition()
 
 	computeSize(xmin, xmax, ymin, ymax);
 	setPos(xmin, ymin);
+	x = xmin;
+	y = ymin;
 
 	for (QGraphicsItem* child : children) {
-		child->setX(std::abs(xmin) + child->x());
-		child->setY(std::abs(ymin) + child->y());
+		if (xmin < 0) {
+			child->setX(child->x() + std::abs(xmin));
+		} else {
+			child->setX(child->x() - std::abs(xmin));
+		}
+
+		if (ymin < 0) {
+			child->setY(child->y() + std::abs(ymin));
+		} else {
+			child->setY(child->y() - std::abs(ymin));
+		}
 	}
 }
 

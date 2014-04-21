@@ -16,6 +16,7 @@ class Mediator : public QWidget
 	Q_OBJECT
 signals:
 	void clicked(const QString& uid);
+	void mousemove(const QPoint & pos);
 public:
 	Mediator(QWidget* parent = 0);
 	virtual ~Mediator(){}
